@@ -393,11 +393,14 @@ public:
         return (*this)[std::string{name}];
     }
     Selector operator[](const int index) const REF_QUAL_LVALUE {
-        auto name = _name + "." + std::to_string(index);
+	char szBuf[256] = {0};
+	sprintf(szBuf, "%s.%d", _name.c_str(), (uint32_t)index);
+        //auto name = _name + "." + index;
         _check_create_table();
         auto traversal = _traversal;
         traversal.push_back(_key);
-        return Selector{_state, *_registry, *_exception_handler, name, traversal, make_Ref(_state, index)};
+        return Selector{_state, *_registry, *_exception_handler, szBuf, traversal, make_Ref(_state, index)};
+        //return Selector{_state, *_registry, *_exception_handler, name, traversal, make_Ref(_state, index)};
     }
 
     friend bool operator==(const Selector &, const char *);

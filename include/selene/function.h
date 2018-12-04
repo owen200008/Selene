@@ -50,7 +50,10 @@ template <typename R, typename... Args>
 class function<R(Args...)> : detail::function_base {
     friend class Selector;
 public:
-    using function_base::function_base;
+    function<R(Args...)>(int ref, lua_State *state) : detail::function_base(ref, state){
+    	
+    }
+    //using function_base::function_base;
 
     R operator()(Args... args) {
         ResetStackOnScopeExit save(_state);
@@ -64,15 +67,21 @@ public:
 
         return detail::_get(detail::_id<R>{}, _state, -1);
     }
-
-    using function_base::Push;
+	
+    void Push(lua_State *state) const{
+    	detail::function_base::Push(state);
+    }
+    //using function_base::Push;
 };
 
 template <typename... Args>
 class function<void(Args...)> : detail::function_base{
     friend class Selector;
 public:
-    using function_base::function_base;
+    function<void(Args...)>(int ref, lua_State *state) : detail::function_base(ref, state){
+    	
+    }
+    //using function_base::function_base;
 
     void operator()(Args... args) {
         ResetStackOnScopeExit save(_state);
@@ -85,7 +94,10 @@ public:
         protected_call(num_args, 1, handler_index);
     }
 
-    using function_base::Push;
+    void Push(lua_State *state) const{
+    	detail::function_base::Push(state);
+    }
+    //using function_base::Push;
 };
 
 // Specialization for multireturn types
@@ -93,7 +105,10 @@ template <typename... R, typename... Args>
 class function<std::tuple<R...>(Args...)> : detail::function_base{
     friend class Selector;
 public:
-    using function_base::function_base;
+    function<std::tuple<R...>(Args...)>(int ref, lua_State *state) : detail::function_base(ref, state){
+    	
+    }
+    //using function_base::function_base;
 
     std::tuple<R...> operator()(Args... args) {
         ResetStackOnScopeExit save(_state);
@@ -110,7 +125,10 @@ public:
         return detail::_get_n<R...>(_state);
     }
 
-    using function_base::Push;
+    void Push(lua_State *state) const{
+    	detail::function_base::Push(state);
+    }
+    //using function_base::Push;
 };
 
 namespace detail {
